@@ -1,0 +1,79 @@
+<html>
+<head>
+    <script>
+        async function getDataFromAPI() {
+            let response = await fetch('http://202.44.40.193/~aws/JSON/priv_hos.json');
+            let rawData = await response.text(); // อ่านผลลัพธ์
+            let objectData = JSON.parse(rawData); // แปลผลลัพธ์เป็น object
+            let result = document.getElementById('result'); // ดึง <ol> เพื่อใช้ในการเพิ่ม <li>
+
+            // สร้างกลุ่มโรงพยาบาล
+            let largeHospitals = [];
+            let mediumHospitals = [];
+            let smallHospitals = [];
+
+            for (let i = 0; i < objectData.features.length; i++) {
+                let hospitalName = objectData.features[i].properties.name;
+                let numBeds = objectData.features[i].properties.num_bed;
+
+                // จัดกลุ่มโรงพยาบาลตามขนาด
+                if (numBeds >= 91) {
+                    largeHospitals.push(`${hospitalName} (${numBeds} เตียง)`);
+                } else if (numBeds >= 31) {
+                    mediumHospitals.push(`${hospitalName} (${numBeds} เตียง)`);
+                } else {
+                    smallHospitals.push(`${hospitalName} (${numBeds} เตียง)`);
+                }
+            }
+
+            // แสดงผลโรงพยาบาลขนาดใหญ่
+            if (largeHospitals.length > 0) {
+                let largeTitle = document.createElement('h2');
+                largeTitle.innerText = 'โรงพยาบาลขนาดใหญ่';
+                result.appendChild(largeTitle);
+                let largeList = document.createElement('ul');
+                largeHospitals.forEach(hospital => {
+                    let li = document.createElement('li');
+                    li.innerHTML = hospital;
+                    largeList.appendChild(li);
+                });
+                result.appendChild(largeList);
+            }
+
+            // แสดงผลโรงพยาบาลขนาดกลาง
+            if (mediumHospitals.length > 0) {
+                let mediumTitle = document.createElement('h2');
+                mediumTitle.innerText = 'โรงพยาบาลขนาดกลาง';
+                result.appendChild(mediumTitle);
+                let mediumList = document.createElement('ul');
+                mediumHospitals.forEach(hospital => {
+                    let li = document.createElement('li');
+                    li.innerHTML = hospital;
+                    mediumList.appendChild(li);
+                });
+                result.appendChild(mediumList);
+            }
+
+            // แสดงผลโรงพยาบาลขนาดเล็ก
+            if (smallHospitals.length > 0) {
+                let smallTitle = document.createElement('h2');
+                smallTitle.innerText = 'โรงพยาบาลขนาดเล็ก';
+                result.appendChild(smallTitle);
+                let smallList = document.createElement('ul');
+                smallHospitals.forEach(hospital => {
+                    let li = document.createElement('li');
+                    li.innerHTML = hospital;
+                    smallList.appendChild(li);
+                });
+                result.appendChild(smallList);
+            }
+        }
+
+        getDataFromAPI(); // เรียกฟังก์ชัน
+    </script>
+</head>
+<body>
+    <h1>โรงพยาบาลเอกชนในกรุงเทพฯ</h1>
+    <div id="result"></div>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<html>
+<head>
+    <script>
+        async function getDataFromAPI() {
+            let response = await fetch('http://202.44.40.193/~aws/JSON/priv_hos.json')
+            let rawData = await response.text() // อ่านผลลพธั ์
+            let objectData = JSON.parse(rawData) // แปลผลลพธั ์เป็น object
+            let result = document.getElementById('result') // ดงึ <ul> เพื่อใช้ในการเพมแท ิ่ ก็ <li>
+
+            for (let i = 0; i < objectData.features.length; i++) {
+                let content = 'HOSPITAL' + objectData.features[i].properties.name + '( ' // ดงขึ ้อมูลจาก object
+                content += objectData.features[i].properties.num_bed + ' )'
+
+                let li = document.createElement('li') // สร้างแทก็ <li>
+                li.innerHTML = content // นําข้อมูลทจี
+                result.appendChild(li) // เพมแท ิ่ ก็ <li> ใหม่
+            }
+        }
+        getDataFromAPI() // เรียกฟังก์ชัน
+    </script>
+</head>
+<body>
+<h1>โรงพยาบาลเอกชนในกทม.</h1>
+<ol type="1" id="result"></ol>
+</body></html>

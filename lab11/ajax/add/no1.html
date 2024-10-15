@@ -1,0 +1,24 @@
+<html><head><meta charset="utf-8">
+    <script>
+        var xmlHttp;
+    
+        function send() {
+
+            var a = document.getElementById("a").value;
+            var b = document.getElementById("b").value;
+            var c = document.getElementById("c").value;
+            var url= 30*a + 70*b + 30*c;
+           
+            document.getElementById("result").innerHTML = "<b>ผลลัพธ์</b> คือ " +url;   
+       }
+       
+    </script></head>
+    <body>
+        <h1>บันทึกการขาย</h1>
+         มะม่วง กก.ละ 30 บาท ขายได้ <input type="number" id="a"> กก.<br>
+         ส้ม กก.ล่ะ 70 บาท ขายได้ <input type="number" id="b"> กก.<br>
+         กล้วย หวี.ล่ะ 30 บาท ขายได้ <input type="number" id="c" onkeyup="send()"> หวี<br>
+         <span id="result"></span>
+    </body></html>
+    
+    

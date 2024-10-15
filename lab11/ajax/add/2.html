@@ -1,0 +1,66 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <script>
+    function send() {
+        // สร้าง XMLHttpRequest object
+        request = new XMLHttpRequest();
+        request.onreadystatechange = showResult;
+
+        // ดึงค่าจาก input สำหรับ keyword
+        var keyword = document.getElementById("keyword").value;
+        
+        // สร้าง URL สำหรับการส่งค่า keyword ไปยัง PHP
+        var url = "?keyword=" + keyword;
+        
+        // ส่ง request แบบ GET
+        request.open("GET", url, true);
+        request.send(null);
+    }
+
+    function showResult() {
+        if (request.readyState == 4) {
+            if (request.status == 200) {
+                // แสดงผลลัพธ์ใน div id="result"
+                document.getElementById("result").innerHTML = request.responseText;
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <h2>Search Members</h2>
+    <input type="text" id="keyword" onkeyup="send()" placeholder="Enter member name">
+    <div id="result"></div>
+
+    <div style="display: flex; flex-wrap: wrap;">
+        <?php
+        // ตรวจสอบว่ามีการส่งค่า keyword มาจากฟอร์มหรือไม่
+        if (!empty($_GET['keyword'])) {
+            $stmt = $pdo->prepare("SELECT * FROM member WHERE name LIKE ?");
+            $value = '%' . $_GET["keyword"] . '%';
+            $stmt->bindParam(1, $value);
+            $stmt->execute();
+            
+            $index = 1; // ตัวแปรนับสำหรับชื่อรูปภาพ (เริ่มจาก 1)
+            
+            // วนลูปเพื่อแสดงผลลัพธ์จากฐานข้อมูล
+            while ($row = $stmt->fetch()) {
+                // ใช้ตัวแปร $index เพื่อกำหนดชื่อไฟล์ภาพ
+                $imagePath = "image/$index.jpg"; 
+                echo "<div style='padding: 15px; text-align: center'>";
+                echo "<img src='$imagePath' width='100'><br>";
+                echo $row["name"] . "<br>";
+                echo $row["address"] . "<br>";
+                echo $row["mobile"] . "<br>";
+                echo $row["email"];
+                echo "</div>";
+                $index++; // เพิ่มค่าตัวแปร $index ทุกครั้งที่วนลูป
+            }
+            } else {
+                echo "<p>กรุณาใส่คำค้นหาก่อนกดค้นหา</p>";
+            }
+        ?>
+        </div>
+</body>
+</html>
